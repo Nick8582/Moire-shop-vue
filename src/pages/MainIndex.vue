@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import MainContentTop from "@/components/Main/MainContentTop";
+import MainContentTop from "@/components/Main/Catalog/MainContentTop";
 import TheCatalog from "@/components/Main/Catalog/TheCatalog";
 
 export default {
