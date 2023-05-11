@@ -1,6 +1,10 @@
 <template>
   <ul class="catalog__list">
-    <ProductItem/>
+    <ProductItem
+      v-for="product in products"
+      :product="product"
+      :key="product.id"
+    />
   </ul>
 </template>
 
@@ -10,5 +14,6 @@ import ProductItem from "@/components/Main/Catalog/ProductItem";
 export default {
   name: 'ProductList',
   components: {ProductItem},
+  props: ['products'],
 }
 </script>

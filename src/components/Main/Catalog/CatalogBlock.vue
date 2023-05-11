@@ -1,6 +1,6 @@
 <template>
   <section class="catalog">
-    <ProductList/>
+    <ProductList :products="products" />
 
     <ul class="catalog__pagination pagination">
       <li class="pagination__item">
