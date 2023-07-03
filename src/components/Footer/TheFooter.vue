@@ -3,7 +3,7 @@
     <div class="footer__wrapper">
       <ul class="footer__links">
         <li>
-          <router-link class="footer__link" :to="{ name: 'index' }">
+          <router-link class="footer__link" to="/">
             Каталог
           </router-link>
         </li>
@@ -33,43 +33,42 @@
         <li class="social__item">
           <a class="social__link" href="#" aria-label="Вконтакте">
             <svg width="20" height="11" fill="currentColor">
-              <use xlink:href="img/svg/sprite.svg#icon-vk"></use>
+              <use xlink:href="#icon-vk"></use>
             </svg>
           </a>
         </li>
         <li class="social__item">
           <a class="social__link" href="#" aria-label="Инстаграм">
             <svg width="17" height="17" fill="currentColor">
-              <use xlink:href="img/svg/sprite.svg#icon-insta"></use>
+              <use xlink:href="#icon-insta"></use>
             </svg>
           </a>
         </li>
         <li class="social__item">
           <a class="social__link" href="#" aria-label="Facebook">
             <svg width="17" height="17" fill="currentColor">
-              <use xlink:href="img/svg/sprite.svg#icon-facebook"></use>
+              <use xlink:href="#icon-facebook"></use>
             </svg>
           </a>
         </li>
         <li class="social__item">
           <a class="social__link" href="#" aria-label="Twitter">
             <svg width="17" height="14" fill="currentColor">
-              <use xlink:href="img/svg/sprite.svg#icon-twitter"></use>
+              <use xlink:href="#icon-twitter"></use>
             </svg>
           </a>
         </li>
         <li class="social__item">
           <a class="social__link" href="#" aria-label="Telegram">
             <svg width="19" height="17" fill="currentColor">
-              <use xlink:href="img/svg/sprite.svg#icon-telegram"></use>
+              <use xlink:href="#icon-telegram"></use>
             </svg>
           </a>
         </li>
       </ul>
 
       <p class="footer__desc">
-        Все права на&nbsp;материалы, находящиеся на&nbsp;сайте, охраняются в&nbsp;соответствии
-        с&nbsp;законодательством&nbsp;РФ,
+        Все права на&nbsp;материалы, находящиеся на&nbsp;сайте, охраняются в&nbsp;соответствии  с&nbsp;законодательством&nbsp;РФ,
         в&nbsp;том числе об&nbsp;авторском праве и&nbsp;смежных правах.
       </p>
 
@@ -92,6 +91,7 @@
     </div>
   </footer>
 </template>
+
 <script>
 export default {
   name: 'TheFooter',

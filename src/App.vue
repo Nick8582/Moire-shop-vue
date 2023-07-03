@@ -7,14 +7,10 @@
 </template>
 
 <script>
-import TheHeader from './components/Header/Header.vue';
-import TheFooter from "@/components/Footer/TheFooter";
+import TheHeader from "./components/Header/TheHeader.vue";
+import TheFooter from "./components/Footer/TheFooter.vue";
 
 export default {
-  name: 'App',
-  components: {
-    TheFooter,
-    TheHeader
-  }
+  components: {TheFooter, TheHeader}
 }
 </script>
