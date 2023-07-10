@@ -16,7 +16,7 @@
 export default {
   props: {
     name: String,
-    info: String,
+    info: Number,
   },
   name: 'ContentTop',
 }
