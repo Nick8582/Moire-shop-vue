@@ -5,15 +5,15 @@
         v-model:price-from="filterPriceFrom"
         v-model:price-to="filterPriceTo"
         v-model:category-id="filterCategoryId"
+        v-model:color-id="filterColorId"
         v-model:material-id="filterMaterialId"
-        v-model:seasons-id="filterSeasonId"
-        v-model:colors-id="filterColorId"
+        v-model:season-id="filterSeasonId"
     />
     <section class="catalog">
-      <LoaderPage :logo="true" :title="true" v-if="isLoading"/>
-      <LoaderFiled v-if="isLoadingFiled"/>
-      <ProductList v-if="productData" :dataProduct="productData.items" />
-      <BasePagination :page="page" />
+      <LoaderPage :logo="true" :title="true" v-if="productsLoading"/>
+      <LoaderFiled v-if="productsLoadingFailed"/>
+      <ProductList :dataProduct="products"/>
+      <BasePagination v-model="page" :count="countProducts" :per-page="productsPerPage"/>
     </section>
   </div>
 </template>
@@ -21,12 +21,12 @@
 <script>
 import ContentTop from "../components/ContentTop/ContentTop.vue";
 import FilterBar from "../components/FilterBar/FilterBar.vue";
+import ProductList from "../components/Product/ProductList.vue";
+import BasePagination from "../components/Pagination/BasePagination.vue";
 import LoaderPage from "../components/Loader/LoaderPage.vue";
 import LoaderFiled from "../components/Loader/LoaderFiled.vue";
 import axios from "axios";
 import {API_BASE_URL} from "../config.js";
-import ProductList from "../components/Product/ProductList.vue";
-import BasePagination from "../components/Pagination/BasePagination.vue";
 
 export default {
   name: 'HomePage',
@@ -34,73 +34,91 @@ export default {
   data() {
     return {
       filterPriceFrom: 0,
-      filterPriceTo: 12345,
+      filterPriceTo: 0,
       filterCategoryId: 0,
-      filterMaterialId: [],
-      filterSeasonId: [],
-      filterColorId: [],
-      isLoading: false, // отображение загрузчика
-      isLoadingFiled: false, // отображение ошибки при неудачной загрузки
+      filterColorId: 0,
+      filterMaterialId: 0,
+      filterSeasonId: 0,
 
-      page: 1, // выводимая страница при первой загрузке
-      limit: 6, // кол-во получаемых товаров на странице
-      productData: null, // массив выводимых товаров получаемых с API
-      totalProduct: 0, // кол-во товаров для отображения на странице
-      pagesLimit: 0, // кол-во страниц получаемых с API
-    }
+      page: 1,
+      productsPerPage: 6,
+
+      productsData: null,
+
+      productsLoading: false,
+      productsLoadingFailed: false,
+      totalProduct: 0,
+      pages: 0,
+    };
+  },
+  computed: {
+    products() {
+      return this.productsData ? this.productsData.items.map((product) => {
+            return {
+              ...product,
+              image: product.colors[0].gallery[0].file.url,
+            };
+          })
+          : [];
+    },
+    countProducts() {
+      return this.productsData ? this.productsData.pagination.total : 0;
+    },
+  },
+  watch: {
+    page() {
+      this.loadProducts();
+    },
+    filterPriceFrom() {
+      this.loadProducts();
+    },
+    filterColorId() {
+      this.loadProducts();
+    },
+    filterMaterialId() {
+      this.loadProducts();
+    },
+    filterSeasonId() {
+      this.loadProducts();
+    },
+    filterPriceTo() {
+      this.loadProducts();
+    },
+    filterCategoryId() {
+      this.loadProducts();
+    },
   },
   methods: {
-    loadingProduct() {
-      this.isLoading = true;
-      this.isLoadingFiled = false;
-      clearTimeout(this.loadProduct)
-      this.loadProduct = setTimeout(() => {
-        axios.get(`${API_BASE_URL}/api/products`, {
-          params: {
-            page: this.page,
-            limit: this.limit,
-            minPrice: this.filterPriceFrom,
-            maxPrice: this.filterPriceTo,
-            categoryId: this.filterCategoryId,
-            materialIds: this.filterMaterialId,
-            seasonIds: this.filterSeasonId,
-            colorIds: this.filterColorId,
-          }
-        })
-            .then(res => {
-              this.productData = res.data;
-              this.totalProduct = res.data.pagination.total;
-              this.pages = res.data.pagination.pagesLimit;
+    loadProducts() {
+      this.productsLoading = true;
+      this.productsLoadingFailed = false;
+      clearTimeout(this.loadProductsTimer);
+      this.loadProductsTimer = setTimeout(() => {
+        axios
+            .get(`${API_BASE_URL}/api/products`, {
+              params: {
+                page: this.page,
+                limit: this.productsPerPage,
+                categoryId: this.filterCategoryId,
+                minPrice: this.filterPriceFrom,
+                maxPrice: this.filterPriceTo,
+                colorId: this.filterColorId,
+                materialId: this.filterMaterialId,
+                seasonId: this.filterSeasonId,
+              },
             })
-            .catch(() => (this.isLoadingFiled = true))
-            .then(() => {
-              this.isLoading = false
+            .then((response) => {
+              this.productsData = response.data;
+              this.totalProduct = response.data.pagination.total;
+              this.pages = response.data.pagination.pagesLimit;
             })
-      }, 1000)
+            .catch(() => { this.productsLoadingFailed = true; })
+            .then(() => { this.productsLoading = false; });
+      }, 0);
     },
   },
   created() {
-    this.loadingProduct();
+    this.loadProducts();
   },
-  watch: {
-    filterPriceFrom() {
-      this.loadingProduct()
-    },
-    filterPriceTo() {
-      this.loadingProduct()
-    },
-    filterCategoryId() {
-      this.loadingProduct()
-    },
-    filterMaterialId() {
-      this.loadingProduct()
-    },
-    filterSeasonId() {
-      this.loadingProduct()
-    },
-    filterColorId() {
-      this.loadingProduct()
-    }
-  },
-}
+};
 </script>
