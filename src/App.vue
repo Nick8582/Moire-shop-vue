@@ -1,16 +1,22 @@
 <template>
   <TheHeader/>
-  <main class="content container">
+  <div class="content container">
     <router-view/>
-  </main>
+  </div>
   <TheFooter/>
 </template>
 
 <script>
-import TheHeader from "./components/Header/TheHeader.vue";
-import TheFooter from "./components/Footer/TheFooter.vue";
+import TheHeader from '@/components/Header/TheHeader'
+import TheFooter from '@/components/Footer/TheFooter'
+import gotoPage from '@/helpers/gotoPage'
 
 export default {
-  components: {TheFooter, TheHeader}
+  gotoPage,
+  name: 'App',
+  components: {
+    TheFooter,
+    TheHeader
+  }
 }
 </script>

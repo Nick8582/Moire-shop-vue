@@ -1,9 +1,9 @@
 <template>
-  <h2>Cart</h2>
+  <h2>Product id</h2>
 </template>
 
 <script>
 export default {
-  name: 'CartPage'
+  name: 'ProductPage'
 }
 </script>

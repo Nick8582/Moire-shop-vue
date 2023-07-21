@@ -3,21 +3,20 @@
 
     <div class="content__row">
       <h1 class="content__title">
-        {{ name }}
+        Каталог
       </h1>
       <span class="content__info">
           {{ info }} товара
-      </span>
+        </span>
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  name: 'CatalogTopContent',
   props: {
-    name: String,
-    info: Number,
-  },
-  name: 'ContentTop',
+    info: Number
+  }
 }
 </script>

@@ -1,8 +1,8 @@
 <template>
   <div class="loader__container">
-    <img src="../../assets/logo-moire.svg" v-if="logo" class="logo__loader" alt="">
+    <img src="../../assets/logo-moire.svg" class="logo__loader" alt="">
     <h2 class="loader__title">
-      <span v-if="title">Загрузка</span>
+      <span>Загрузка</span>
       <span class="lds-dual-ring"></span>
     </h2>
   </div>
@@ -10,8 +10,7 @@
 
 <script>
 export default {
-  props: ['logo', 'title'],
-  name: 'LoaderPage',
+  name: 'LoadingPage'
 }
 </script>
 <style>
