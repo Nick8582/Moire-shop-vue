@@ -1,8 +1,8 @@
 <template>
   <li class="catalog__item">
-    <a class="catalog__pic" href="#">
+    <router-link :to="{name: 'product', params: {id: productId}}" class="catalog__pic">
       <img :src="images[activePhoto].file.url" :alt="product.title">
-    </a>
+    </router-link>
 
     <h3 class="catalog__title">
       <a href="#">
@@ -33,7 +33,7 @@ import numberFormat from '@/helpers/numberFormat'
 
 export default {
   name: 'CatalogProductItem',
-  props: ['product', 'images'],
+  props: ['product', 'images', 'productId'],
   data () {
     return {
       activePhoto: 0
