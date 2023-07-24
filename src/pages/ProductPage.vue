@@ -1,5 +1,7 @@
 <template>
-  <div class="content__top">
+  <LoadingPage v-if="isLoading"/>
+  <LoadingFiled v-if="isLoadingFailed"/>
+  <div class="content__top" v-if="!isLoadingFailed && !isLoading">
     <ul class="breadcrumbs">
       <li class="breadcrumbs__item">
         <router-link to="/" class="breadcrumbs__link">
@@ -7,41 +9,39 @@
         </router-link>
       </li>
       <li class="breadcrumbs__item">
-        <a class="breadcrumbs__link">
-          Носки
-        </a>
+        <router-link :to="{name: 'home', query:{ category: product.category.id }}" class="breadcrumbs__link">
+          {{ product.category.title }}
+        </router-link>
       </li>
       <li class="breadcrumbs__item">
         <a class="breadcrumbs__link">
-          Носки с принтом мороженое
+          {{ product.title }}
         </a>
       </li>
     </ul>
   </div>
 
-  <section class="item">
+  <section class="item" v-if="!isLoadingFailed && !isLoading">
     <div class="item__pics pics">
       <div class="pics__wrapper">
-        <img width="570" height="570" src="img/product-square-1.jpg" srcset="img/product-square-1@2x.jpg 2x" alt="Название товара">
+        <img width="570" height="570"
+             :src="gallery[activeColorId].image"
+             :alt="product.title">
       </div>
       <ul class="pics__list">
-        <li class="pics__item">
-          <a href="" class="pics__link pics__link--current">
-            <img width="98" height="98" src="img/product-square-2.jpg" srcset="img/product-square-2@2x.jpg 2x" alt="Название товара">
-          </a>
-        </li>
-        <li class="pics__item">
-          <a href="" class="pics__link">
-            <img width="98" height="98" src="img/product-square-3.jpg" srcset="img/product-square-3@2x.jpg 2x" alt="Название товара">
+        <li class="pics__item" v-for="image in gallery" :key="image.id">
+          <a href="" class="pics__link" :class="{'pics__link--current' : image.id === colorActiveId}"
+             @click.prevent="changeImg(image.id)">
+            <img width="98" height="98" :src="image.image" :alt="product.title">
           </a>
         </li>
       </ul>
     </div>
 
     <div class="item__info">
-      <span class="item__code">Артикул: 150030</span>
+      <span class="item__code">Артикул: {{ product.id }}</span>
       <h2 class="item__title">
-        Смартфон Xiaomi Mi Mix 3 6/128GB
+        {{ product.title }}
       </h2>
       <div class="item__form">
         <form class="form" action="#" method="POST">
@@ -63,7 +63,7 @@
             </div>
 
             <b class="item__price">
-              18 990 ₽
+              {{ pricePretty }} ₽
             </b>
           </div>
 
@@ -71,35 +71,25 @@
             <fieldset class="form__block">
               <legend class="form__legend">Цвет</legend>
               <ul class="colors colors--black">
-                <li class="colors__item">
+                <li class="colors__item" v-for="color in product.colors" :key="color.id">
                   <label class="colors__label">
-                    <input class="colors__radio sr-only" type="radio" name="color-item" value="blue" checked="">
-                    <span class="colors__value" style="background-color: #73B6EA;">
-                      </span>
+                    <input
+                      class="colors__radio sr-only"
+                      type="radio"
+                      name="color"
+                      :value="color.color.id"
+                      :checked="colorActiveId === color.color.id"
+                      v-model="colorActiveId">
+                    <span class="colors__value" :style="{'background-color': color.color.code}"></span>
                   </label>
-                </li>
-                <li class="colors__item">
-                  <label class="colors__label">
-                    <input class="colors__radio sr-only" type="radio" name="color-item" value="yellow">
-                    <span class="colors__value" style="background-color: #FFBE15;">
-                      </span>
-                  </label>
-                </li>
-                <li class="colors__item">
-                  <label class="colors__label">
-                    <input class="colors__radio sr-only" type="radio" name="color-item" value="gray">
-                    <span class="colors__value" style="background-color: #939393;">
-                    </span></label>
                 </li>
               </ul>
             </fieldset>
             <fieldset class="form__block">
               <legend class="form__legend">Размер</legend>
               <label class="form__label form__label--small form__label--select">
-                <select class="form__select" type="text" name="category">
-                  <option value="value1">37-39</option>
-                  <option value="value2">40-42</option>
-                  <option value="value3">42-50</option>
+                <select class="form__select" name="category" v-model="sizeActiveId">
+                  <option v-for="size in product.sizes" :key="size.id" :value="size.id">{{ size.title }}</option>
                 </select>
               </label>
             </fieldset>
@@ -138,9 +128,11 @@
 
         <p>
           Любой возврат должен быть осуществлен в течение Возвраты в магазине БЕСПЛАТНО.<br>
-          Вы можете вернуть товары в любой магазин. Магазин должен быть расположен в стране, в которой Вы осуществили покупку.
+          Вы можете вернуть товары в любой магазин. Магазин должен быть расположен в стране, в которой Вы осуществили
+          покупку.
           БЕСПЛАТНЫЙ возврат в Пункт выдачи заказов.<br>
-          Для того чтобы вернуть товар в одном из наших Пунктов выдачи заказов, позвоните по телефону 8 800 600 90 09<br>
+          Для того чтобы вернуть товар в одном из наших Пунктов выдачи заказов, позвоните по телефону 8 800 600 90
+          09<br>
         </p>
 
       </div>
@@ -149,12 +141,88 @@
 </template>
 
 <script>
+import axios from 'axios'
+import { API_BASE_URL } from '@/config'
+import LoadingPage from '@/components/Loading/LoadingPage'
+import LoadingFiled from '@/components/Loading/LoadingFiled'
+import numberFormat from '@/helpers/numberFormat'
+import noImage from '@/assets/noImage.jpg'
+
 export default {
   name: 'ProductPage',
+  components: {
+    LoadingFiled,
+    LoadingPage
+  },
   data () {
     return {
-      productAmount: 1
+      productAmount: 1,
+      productData: null,
+      activeColorId: 0,
+      activeSizeId: 0,
+      isLoading: false,
+      isLoadingFailed: false
     }
+  },
+  computed: {
+    product () {
+      return {
+        ...this.productData,
+        gallery: this.productData.colors.map(color => {
+          return {
+            id: color.color.id,
+            image: color.gallery ? color.gallery[0].file.url : noImage
+          }
+        })
+      }
+    },
+    pricePretty () {
+      return numberFormat(this.product.price)
+    },
+    gallery () {
+      console.log(this.product.gallery[this.activeColorId])
+      return this.product.gallery
+    },
+    colorActiveId: {
+      get () {
+        return this.gallery[this.activeColorId].id
+      },
+      set (id) {
+        const ids = this.gallery.findIndex((item) => item.id === id)
+        this.activeColorId = ids
+      }
+    },
+    sizeActiveId: {
+      get () {
+        return this.product.sizes[this.activeSizeId].id
+      },
+      set (id) {
+        const ids = this.product.sizes.findIndex((item) => item.id === id)
+        this.activeSizeId = ids
+      }
+    }
+  },
+  methods: {
+    async loadProduct () {
+      this.isLoading = true
+      this.isLoadingFailed = false
+      try {
+        const { data } = await axios.get(`${API_BASE_URL}/api/products/${this.$route.params.id}`)
+        console.log(data)
+        this.productData = data
+      } catch (err) {
+        this.isLoading = false
+        this.isLoadingFailed = true
+      }
+      this.isLoading = false
+    },
+    changeImg (id) {
+      const ids = this.gallery.findIndex((item) => item.id === id)
+      this.activeColorId = ids
+    }
+  },
+  created () {
+    this.loadProduct()
   }
 }
 </script>
