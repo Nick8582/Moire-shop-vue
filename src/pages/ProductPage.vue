@@ -46,22 +46,7 @@
       <div class="item__form">
         <form class="form" action="#" method="POST">
           <div class="item__row item__row--center">
-            <div class="form__counter">
-              <button type="button" aria-label="Убрать один товар">
-                <svg width="12" height="12" fill="currentColor">
-                  <use xlink:href="#icon-minus"></use>
-                </svg>
-              </button>
-
-              <input type="text" value="1" name="count">
-
-              <button type="button" aria-label="Добавить один товар">
-                <svg width="12" height="12" fill="currentColor">
-                  <use xlink:href="#icon-plus"></use>
-                </svg>
-              </button>
-            </div>
-
+            <CounterProduct v-model:product-amount="productAmount"/>
             <b class="item__price">
               {{ pricePretty }} ₽
             </b>
@@ -135,10 +120,12 @@ import ProductAbout from '@/components/Product/ProductAbout'
 import ProductAboutDelivery from '@/components/Product/ProductAboutDelivery'
 import numberFormat from '@/helpers/numberFormat'
 import noImage from '@/assets/noImage.jpg'
+import CounterProduct from '@/components/Counter/CounterProduct'
 
 export default {
   name: 'ProductPage',
   components: {
+    CounterProduct,
     LoadingFiled,
     LoadingPage,
     ProductAbout,
@@ -157,7 +144,6 @@ export default {
   },
   computed: {
     product () {
-      console.log(this.productData)
       return {
         ...this.productData,
         gallery: this.productData.colors.map(color => {
