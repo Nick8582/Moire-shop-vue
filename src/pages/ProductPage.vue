@@ -105,37 +105,23 @@
     <div class="item__desc">
       <ul class="tabs">
         <li class="tabs__item">
-          <a class="tabs__link" href="#">
+          <a
+            class="tabs__link"
+            :class="{'tabs__link--current' : setAbout === 'ProductAbout'}"
+            @click.prevent="setSelectTab('ProductAbout')">
             Информация о товаре
           </a>
         </li>
         <li class="tabs__item">
-          <a class="tabs__link tabs__link--current">
+          <a
+            class="tabs__link"
+            :class="{'tabs__link--current' : setAbout === 'ProductAboutDelivery'}"
+            @click.prevent="setSelectTab('ProductAboutDelivery')">
             Доставка и возврат
           </a>
         </li>
       </ul>
-
-      <div class="item__content">
-        <h3>Доставка:</h3>
-
-        <p>
-          1. Курьерская доставка по Москве и Московской области – 290 ₽<br>
-          2.Самовывоз из магазина. Список и адреса магазинов Вы можете посмотреть здесь<br>
-        </p>
-
-        <h3>Возврат:</h3>
-
-        <p>
-          Любой возврат должен быть осуществлен в течение Возвраты в магазине БЕСПЛАТНО.<br>
-          Вы можете вернуть товары в любой магазин. Магазин должен быть расположен в стране, в которой Вы осуществили
-          покупку.
-          БЕСПЛАТНЫЙ возврат в Пункт выдачи заказов.<br>
-          Для того чтобы вернуть товар в одном из наших Пунктов выдачи заказов, позвоните по телефону 8 800 600 90
-          09<br>
-        </p>
-
-      </div>
+      <component :is="setAbout"/>
     </div>
   </section>
 </template>
@@ -145,6 +131,8 @@ import axios from 'axios'
 import { API_BASE_URL } from '@/config'
 import LoadingPage from '@/components/Loading/LoadingPage'
 import LoadingFiled from '@/components/Loading/LoadingFiled'
+import ProductAbout from '@/components/Product/ProductAbout'
+import ProductAboutDelivery from '@/components/Product/ProductAboutDelivery'
 import numberFormat from '@/helpers/numberFormat'
 import noImage from '@/assets/noImage.jpg'
 
@@ -152,7 +140,9 @@ export default {
   name: 'ProductPage',
   components: {
     LoadingFiled,
-    LoadingPage
+    LoadingPage,
+    ProductAbout,
+    ProductAboutDelivery
   },
   data () {
     return {
@@ -161,11 +151,13 @@ export default {
       activeColorId: 0,
       activeSizeId: 0,
       isLoading: false,
-      isLoadingFailed: false
+      isLoadingFailed: false,
+      setAbout: 'ProductAbout'
     }
   },
   computed: {
     product () {
+      console.log(this.productData)
       return {
         ...this.productData,
         gallery: this.productData.colors.map(color => {
@@ -180,7 +172,6 @@ export default {
       return numberFormat(this.product.price)
     },
     gallery () {
-      console.log(this.product.gallery[this.activeColorId])
       return this.product.gallery
     },
     colorActiveId: {
@@ -208,7 +199,6 @@ export default {
       this.isLoadingFailed = false
       try {
         const { data } = await axios.get(`${API_BASE_URL}/api/products/${this.$route.params.id}`)
-        console.log(data)
         this.productData = data
       } catch (err) {
         this.isLoading = false
@@ -219,6 +209,9 @@ export default {
     changeImg (id) {
       const ids = this.gallery.findIndex((item) => item.id === id)
       this.activeColorId = ids
+    },
+    setSelectTab (val) {
+      this.setAbout = val
     }
   },
   created () {
