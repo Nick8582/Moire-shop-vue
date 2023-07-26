@@ -1,5 +1,5 @@
 <template>
-  <div class="form__counter">
+  <div class="form__counter" :class="classPlus">
     <button type="button" aria-label="Убрать один товар" @click.prevent="dizcrement">
       <svg width="12" height="12" fill="currentColor">
         <use xlink:href="#icon-minus"></use>
@@ -20,7 +20,8 @@
 export default {
   name: 'CounterProduct',
   props: {
-    productAmount: Number
+    productAmount: Number,
+    classPlus: String
   },
   data () {
     return {

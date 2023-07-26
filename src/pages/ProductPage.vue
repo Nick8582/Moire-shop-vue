@@ -44,7 +44,7 @@
         {{ product.title }}
       </h2>
       <div class="item__form">
-        <form class="form" action="#" method="POST">
+        <form class="form" action="#" method="POST" @submit.prevent="addToCart">
           <div class="item__row item__row--center">
             <CounterProduct v-model:product-amount="productAmount"/>
             <b class="item__price">
@@ -121,6 +121,7 @@ import ProductAboutDelivery from '@/components/Product/ProductAboutDelivery'
 import numberFormat from '@/helpers/numberFormat'
 import noImage from '@/assets/noImage.jpg'
 import CounterProduct from '@/components/Counter/CounterProduct'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'ProductPage',
@@ -139,6 +140,8 @@ export default {
       activeSizeId: 0,
       isLoading: false,
       isLoadingFailed: false,
+      productAdded: false,
+      productAddSending: false,
       setAbout: 'ProductAbout'
     }
   },
@@ -180,6 +183,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['addProductToCart']),
     async loadProduct () {
       this.isLoading = true
       this.isLoadingFailed = false
@@ -191,6 +195,19 @@ export default {
         this.isLoadingFailed = true
       }
       this.isLoading = false
+    },
+    async addToCart () {
+      this.productAdded = false
+      this.productAddSending = true
+      this.addProductToCart({
+        productId: this.product.id,
+        colorId: this.activeColorId,
+        sizeId: this.activeSizeId,
+        quantity: this.productAmount
+      }).then(() => {
+        this.productAdded = true
+        this.productAddSending = false
+      })
     },
     changeImg (id) {
       const ids = this.gallery.findIndex((item) => item.id === id)
