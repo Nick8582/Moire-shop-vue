@@ -6,17 +6,17 @@ export default createStore({
   state: {
     cartData: [],
     userAccessKey: null,
+    cartProducts: [],
     cartProductsData: []
   },
   mutations: {
-    updateCartProductsData (state, item) {
-      state.cartProductsData = item
+    addCartProductData (state, items) {
+      state.cartProductsData = items
     },
     syncCartProducts (state) {
       state.cartProducts = state.cartProductsData.map((item) => ({
-        productId: item.product.id,
-        amount: item.quantity,
-        product: item.product
+        id: item.product.id,
+        quantity: item.quantity
       }))
     },
     updateUserAccessKey (state, accessKey) {
@@ -34,20 +34,19 @@ export default createStore({
       sizeId,
       quantity
     }) {
-      return (new Promise(resolve => setTimeout(resolve, 2000)))
-        .then(() => axios.post(`${API_BASE_URL}/api/baskets/products`, {
-          productId,
-          colorId,
-          sizeId,
-          quantity
-        }, {
-          params: {
-            userAccessKey: context.state.userAccessKey
-          }
-        }).then((res) => {
-          context.commit('updateCartProductsData', res.data.item)
-          context.commit('syncCartProducts')
-        }))
+      return axios.post(`${API_BASE_URL}/api/baskets/products`, {
+        productId,
+        colorId,
+        sizeId,
+        quantity
+      }, {
+        params: {
+          userAccessKey: context.state.userAccessKey
+        }
+      }).then((res) => {
+        context.commit('addCartProductData', res.data.items)
+        context.commit('syncCartProducts')
+      })
     },
     loadCart (context) {
       return axios.get(`${API_BASE_URL}/api/baskets`, {
@@ -59,7 +58,7 @@ export default createStore({
           localStorage.setItem('userAccessKey', res.data.user.accessKey)
           context.commit('updateUserAccessKey', res.data.user.accessKey)
         }
-        context.commit('updateCartProductsData', res.data.items)
+        context.commit('updateCartProductData', res.data.items)
         context.commit('syncCartProducts')
       })
     }

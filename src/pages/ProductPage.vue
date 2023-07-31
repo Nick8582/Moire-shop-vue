@@ -200,10 +200,10 @@ export default {
       this.productAdded = false
       this.productAddSending = true
       this.addProductToCart({
-        productId: this.product.id,
-        colorId: this.activeColorId,
-        sizeId: this.activeSizeId,
-        quantity: this.productAmount
+        productId: this.product.id.toString(),
+        colorId: this.colorActiveId.toString(),
+        sizeId: this.sizeActiveId.toString(),
+        quantity: this.productAmount.toString()
       }).then(() => {
         this.productAdded = true
         this.productAddSending = false
