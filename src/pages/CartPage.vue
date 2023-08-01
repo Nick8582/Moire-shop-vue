@@ -2,7 +2,7 @@
   <div class="content__top">
     <ul class="breadcrumbs">
       <li class="breadcrumbs__item">
-        <router-link to="/" class="breadcrumbs__link" >
+        <router-link to="/" class="breadcrumbs__link">
           Каталог
         </router-link>
       </li>
@@ -17,14 +17,16 @@
       <h1 class="content__title">
         Корзина
       </h1>
-      <span class="content__info">{{ $store.state.cartData.length }} товара</span>
+      <span class="content__info">{{ $store.state.cartProducts.length }} товара</span>
     </div>
   </div>
 
   <section class="cart">
     <form class="cart__form form" action="#" method="POST">
       <div class="cart__field">
-        <CartList />
+        <ul class="cart__list">
+          <CartItem v-for="product in products" :product="product" :key="product.id"/>
+        </ul>
       </div>
 
       <div class="cart__block">
@@ -32,21 +34,36 @@
           Мы&nbsp;посчитаем стоимость доставки на&nbsp;следующем этапе
         </p>
         <p class="cart__price">
-          Итого: <span>4 070 ₽</span>
+          Итого: <span>{{ totalPricePretty }} ₽</span>
         </p>
-
-        <button class="cart__button button button--primery" type="submit">
-          Оформить заказ
-        </button>
+        <router-link v-slot="{navigate}" to="/order">
+          <button class="cart__button button button--primery" @click="navigate" :disabled="!totalPrice" type="submit">
+            Оформить заказ
+          </button>
+        </router-link>
       </div>
     </form>
   </section>
 </template>
 
 <script>
-import CartList from '@/components/Cart/CartList'
+import CartItem from '@/components/Cart/CartItem'
+import { mapGetters } from 'vuex'
+import numberFormat from '@/helpers/numberFormat'
+
 export default {
   name: 'CartPage',
-  components: { CartList }
+  components: {
+    CartItem
+  },
+  computed: {
+    ...mapGetters({
+      products: 'cartDetailProducts',
+      totalPrice: 'cartTotalPrice'
+    }),
+    totalPricePretty () {
+      return numberFormat(this.totalPrice)
+    }
+  }
 }
 </script>

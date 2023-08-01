@@ -1,29 +1,24 @@
 <template>
   <li class="cart__item product">
     <div class="product__pic">
-      <img src="img/product-square-5.jpg" width="120" height="120" srcset="img/product-square-5@2x.jpg 2x"
-           alt="Название товара">
+      <img :src="imageProduct" width="120" height="120" :alt="product.product.title">
     </div>
-    <h3 class="product__title">
-      Гироскутер Razor Hovertrax 2.0
-    </h3>
+    <h3 class="product__title">{{ product.product.title }}</h3>
     <p class="product__info product__info--color">
+      Размер:
+      <span class="product__size">{{ product.size.title }}</span>
       Цвет:
-      <span>
-                  <i style="background-color: #73B6EA"></i>
-                  Нежно-голубой
-                </span>
+      <span><i :style="`background-color: ${colorProduct.color.code}`"></i>{{ colorProduct.color.title }}</span>
     </p>
-    <span class="product__code">
-                Артикул: 1501230
-              </span>
-    <CounterProduct :class-plus="'product__counter'" v-model:product-amount="productAmount"/>
+    <span class="product__code">Артикул: {{ product.id }}</span>
+    <CounterProduct :class-plus="'product__counter'" v-model:product-amount="amount"/>
 
     <b class="product__price">
-      1 990 ₽
+      {{ pricePretty }} ₽
     </b>
 
-    <button class="product__del button-del" type="button" aria-label="Удалить товар из корзины">
+    <button class="product__del button-del" type="button" aria-label="Удалить товар из корзины"
+            @click.prevent="deleteProduct(product.id)">
       <svg width="20" height="20" fill="currentColor">
         <use xlink:href="#icon-close"></use>
       </svg>
@@ -33,6 +28,8 @@
 
 <script>
 import CounterProduct from '@/components/Counter/CounterProduct'
+import numberFormat from '@/helpers/numberFormat'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'CartItem',
@@ -42,8 +39,39 @@ export default {
   },
   data () {
     return {
-      productAmount: null
+      productGallery: 0
     }
+  },
+  computed: {
+    colorProduct () {
+      return this.product.color
+    },
+    imageProduct () {
+      return this.colorProduct.gallery[0].file.url
+    },
+    pricePretty () {
+      return numberFormat(this.product.price * this.product.quantity)
+    },
+    amount: {
+      get () {
+        return this.product.quantity
+      },
+      set (value) {
+        this.$store.dispatch('updateCartProductQuantity', {
+          productId: this.product.id,
+          quantity: value
+        })
+      }
+    }
+  },
+  methods: {
+    ...mapActions({ deleteProduct: 'deleteCartProduct' })
   }
 }
 </script>
+
+<style scoped>
+.product__size {
+  padding: 0;
+}
+</style>

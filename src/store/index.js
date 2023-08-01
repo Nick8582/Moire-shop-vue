@@ -24,9 +24,27 @@ export default createStore({
     },
     updateCartProductData (state, items) {
       state.cartProductsData = items
+    },
+    updateCartProductQuantity (state, {
+      productId,
+      quantity
+    }) {
+      const item = state.cartProducts.find((item) => item.productId === productId)
+      if (item) {
+        item.quantity = quantity
+      }
     }
   },
-  getters: {},
+  getters: {
+    cartDetailProducts (state) {
+      if (state.cartProducts) {
+        return state.cartProductsData
+      }
+    },
+    cartTotalPrice (state) {
+      return state.cartProductsData.reduce((acc, item) => (item.price * item.quantity) + acc, 0)
+    }
+  },
   actions: {
     addProductToCart (context, {
       productId,
@@ -58,6 +76,41 @@ export default createStore({
           localStorage.setItem('userAccessKey', res.data.user.accessKey)
           context.commit('updateUserAccessKey', res.data.user.accessKey)
         }
+        context.commit('updateCartProductData', res.data.items)
+        context.commit('syncCartProducts')
+      })
+    },
+    updateCartProductQuantity (context, {
+      productId,
+      quantity
+    }) {
+      context.commit('updateCartProductQuantity', {
+        productId,
+        quantity
+      })
+      if (quantity < 1) {
+        return
+      }
+      return axios.put(`${API_BASE_URL}/api/baskets/products`, {
+        basketItemId: productId,
+        quantity
+      }, {
+        params: {
+          userAccessKey: context.state.userAccessKey,
+        }
+      }).then((res) => context.commit('updateCartProductData', res.data.items))
+        .catch(() => context.commit('syncCartProducts'))
+    },
+    deleteCartProduct (context, productId) {
+      context.commit('updateCartProductQuantity', productId)
+      return axios.delete(`${API_BASE_URL}/api/baskets/products`, {
+        data: {
+          basketItemId: productId
+        },
+        params: {
+          userAccessKey: context.state.userAccessKey,
+        }
+      }).then((res) => {
         context.commit('updateCartProductData', res.data.items)
         context.commit('syncCartProducts')
       })
