@@ -1,8 +1,7 @@
-import OrderInputField from '@/components/Order/OrderInputField'
-
+import OrderInput from '@/components/Order/OrderInput'
 export default {
-  model: { OrderInputField },
-  components: { OrderInputField },
+  model: { OrderInput },
+  components: { OrderInput },
   props: {
     title: {
       required: true,
@@ -22,11 +21,11 @@ export default {
   computed: {
     dataValue: {
       get () {
-        return this.value
+        return this.modelValue
       },
       set (modelValue) {
         this.$emit('update:modelValue', modelValue)
-      },
+      }
     }
   }
 }

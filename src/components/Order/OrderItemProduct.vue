@@ -1,13 +1,25 @@
 <template>
   <li class="cart__order">
-    <h3>Смартфон Xiaomi Redmi Note 7 Pro 6/128GB</h3>
-    <b>990 ₽</b>
-    <span>Артикул: 150030</span>
+    <h3>{{ product.product.title }}</h3>
+    <b>{{ priceProductPretty }} ₽ x {{ product.quantity }}</b>
+    <span>Артикул: {{ product.id }}</span>
   </li>
 </template>
 
 <script>
+import numberFormat from '@/helpers/numberFormat'
+
 export default {
-  name: 'OrderItemProduct'
+  name: 'OrderItemProduct',
+  props: {
+    product: {
+      required: true
+    }
+  },
+  computed: {
+    priceProductPretty () {
+      return numberFormat(this.product.price)
+    }
+  }
 }
 </script>

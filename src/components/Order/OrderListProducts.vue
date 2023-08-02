@@ -1,7 +1,7 @@
 <template>
   <div class="cart__block">
     <ul class="cart__orders">
-      <OrderItemProduct/>
+      <OrderItemProduct v-for="product in products" :key="product.id" :product="product"/>
     </ul>
 
     <div class="cart__total">
@@ -9,7 +9,7 @@
       <p>Итого: <b>{{ $store.state.cartProducts.length }}</b> товара на сумму <b>{{ totalPricePretty }} ₽</b></p>
     </div>
 
-    <button class="cart__button button button--primery" type="submit">
+    <button class="cart__button button button--primery" v-show="button" type="submit">
       Оформить заказ
     </button>
   </div>
@@ -23,8 +23,15 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'OrderListProducts',
   components: { OrderItemProduct },
+  props: {
+    button: {
+      type: Boolean,
+      default: false
+    }
+  },
   computed: {
     ...mapGetters({
+      products: 'cartDetailProducts',
       totalPrice: 'cartTotalPrice'
     }),
     totalPricePretty () {

@@ -101,7 +101,7 @@
         </div>
       </div>
 
-      <OrderListProducts />
+      <OrderListProducts :button="true"/>
       <div class="cart__error form__error-block" v-if="formErrorMessage">
         <h4>Заявка не отправлена!</h4>
         <p>
@@ -126,8 +126,20 @@ export default {
   },
   data () {
     return {
-      formData: [],
-      formError: [],
+      formData: {
+        name: '',
+        address: '',
+        phone: '',
+        email: '',
+        comment: ''
+      },
+      formError: {
+        name: '',
+        address: '',
+        phone: '',
+        email: '',
+        comment: ''
+      },
       formErrorMessage: ''
     }
   }

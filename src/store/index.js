@@ -96,7 +96,7 @@ export default createStore({
         quantity
       }, {
         params: {
-          userAccessKey: context.state.userAccessKey,
+          userAccessKey: context.state.userAccessKey
         }
       }).then((res) => context.commit('updateCartProductData', res.data.items))
         .catch(() => context.commit('syncCartProducts'))
@@ -108,7 +108,7 @@ export default createStore({
           basketItemId: productId
         },
         params: {
-          userAccessKey: context.state.userAccessKey,
+          userAccessKey: context.state.userAccessKey
         }
       }).then((res) => {
         context.commit('updateCartProductData', res.data.items)
