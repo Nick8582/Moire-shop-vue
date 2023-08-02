@@ -8,7 +8,8 @@ export default createStore({
     userAccessKey: null,
     cartProducts: [],
     cartProductsData: [],
-    optionDelivery: 1
+    optionDelivery: 1,
+    optionPayment: 1
   },
   mutations: {
     addCartProductData (state, items) {

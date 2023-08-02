@@ -4,20 +4,18 @@
       <input
         class="options__radio sr-only"
         type="radio"
-        name="delivery"
+        name="pay"
         :value="options.id"
         :checked="checkOptions === options.id"
         @click="checkClick(options.id)">
-      <span class="options__value">{{ options.title }} <b>{{ priceOption }}</b></span>
+      <span class="options__value">{{ options.title }}</span>
     </label>
   </li>
 </template>
 
 <script>
-import numberFormat from '@/helpers/numberFormat'
-
 export default {
-  name: 'OrderRadioDelivery',
+  name: 'OrderRadioPayment',
   props: {
     options: {
       required: true,
@@ -25,20 +23,13 @@ export default {
     }
   },
   computed: {
-    priceOption () {
-      if (this.options.price === '0') {
-        return 'бесплатно'
-      } else {
-        return `${numberFormat(this.options.price)} ₽`
-      }
-    },
     checkOptions () {
-      return this.$store.state.optionDelivery
+      return this.$store.state.optionPayment
     }
   },
   methods: {
     checkClick (val) {
-      this.$store.state.optionDelivery = val
+      this.$store.state.optionPayment = val
     }
   }
 }
