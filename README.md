@@ -1,5 +1,8 @@
 # moire-vue
 
+The following technologies were used in this project: vue, vue, vue-router, axios.  
+The project is technically complete.
+
 ## Project setup
 ```
 yarn install
