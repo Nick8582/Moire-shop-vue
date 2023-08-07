@@ -124,8 +124,7 @@ export default createStore({
         context.commit('updateCartProductData', res.data.items)
         context.commit('syncCartProducts')
       })
-    },
-
+    }
   },
   modules: {}
 })

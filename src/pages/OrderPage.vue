@@ -67,7 +67,12 @@
         </div>
       </div>
 
-      <OrderListProducts :button="true"/>
+      <OrderListProducts
+        :products="products"
+        :total-price="totalPrice"
+        :cart-product-length="cartProductsLength"
+        :delivery-price="deliveryPrice"
+        :button="true"/>
       <div class="cart__error form__error-block" v-if="formErrorMessage">
         <h4>Заявка не отправлена!</h4>
         <p>
@@ -87,6 +92,7 @@ import OrderPayment from '@/components/Order/OrderPayment'
 import gotoPage from '@/helpers/gotoPage'
 import axios from 'axios'
 import { API_BASE_URL } from '@/config'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'OrderPage',
@@ -140,10 +146,21 @@ export default {
           params: { id: res.data.id }
         })
       }).catch((err) => {
-        console.log(err)
         this.formError = err.response.data.error.request || {}
         this.formErrorMessage = err.response.data.error.message
       })
+    }
+  },
+  computed: {
+    ...mapGetters({
+      products: 'cartDetailProducts',
+      totalPrice: 'cartTotalPrice'
+    }),
+    deliveryPrice () {
+      return this.$store.state.deliveryPrice
+    },
+    cartProductsLength () {
+      return this.$store.state.cartProducts.length
     }
   }
 }

@@ -1,5 +1,6 @@
 <template>
-  <div class="content__top">
+  <LoadingPage v-if="isLoading"/>
+  <div class="content__top" v-if="!isLoading">
     <ul class="breadcrumbs">
       <li class="breadcrumbs__item">
         <router-link class="breadcrumbs__link" to="/">
@@ -19,11 +20,11 @@
     </ul>
 
     <h1 class="content__title">
-      Заказ оформлен <span>№ 23621</span>
+      Заказ оформлен <span>№ {{ orderInfo.id }}</span>
     </h1>
   </div>
 
-  <section class="cart">
+  <section class="cart" v-if="!isLoading">
     <form class="cart__form form" action="#" method="POST">
       <div class="cart__field">
         <p class="cart__message">
@@ -33,78 +34,81 @@
 
         <ul class="dictionary">
           <li class="dictionary__item">
-              <span class="dictionary__key">
-                Получатель
-              </span>
-            <span class="dictionary__value">
-                Иванова Василиса Алексеевна
-              </span>
+            <span class="dictionary__key">Получатель</span>
+            <span class="dictionary__value">{{ orderInfo.name }}</span>
           </li>
           <li class="dictionary__item">
-              <span class="dictionary__key">
-                Адрес доставки
-              </span>
-            <span class="dictionary__value">
-                Москва, ул. Ленина, 21, кв. 33
-              </span>
+            <span class="dictionary__key">Адрес доставки</span>
+            <span class="dictionary__value">{{ orderInfo.address }}</span>
           </li>
           <li class="dictionary__item">
-              <span class="dictionary__key">
-                Телефон
-              </span>
-            <span class="dictionary__value">
-                8 800 989 74 84
-              </span>
+            <span class="dictionary__key">Телефон</span>
+            <span class="dictionary__value">{{ orderInfo.phone }}</span>
           </li>
           <li class="dictionary__item">
-              <span class="dictionary__key">
-                Email
-              </span>
-            <span class="dictionary__value">
-                lalala@mail.ru
-              </span>
+            <span class="dictionary__key">Email</span>
+            <span class="dictionary__value">{{ orderInfo.email }}</span>
           </li>
           <li class="dictionary__item">
-              <span class="dictionary__key">
-                Способ оплаты
-              </span>
-            <span class="dictionary__value">
-                картой при получении
-              </span>
+            <span class="dictionary__key">Комментарий к заказу</span>
+            <span class="dictionary__value">{{ orderInfo.comment }}</span>
+          </li>
+          <li class="dictionary__item">
+            <span class="dictionary__key">Способ оплаты</span>
+            <span class="dictionary__value">{{ orderInfo.paymentType }}</span>
+          </li>
+          <li class="dictionary__item">
+            <span class="dictionary__key">Способ доставки</span>
+            <span class="dictionary__value">{{ orderInfo.deliveryType.title }}</span>
+          </li>
+          <li class="dictionary__item">
+            <span class="dictionary__key">Статус заказа</span>
+            <span class="dictionary__value">{{ orderInfo.status.title }}</span>
           </li>
         </ul>
       </div>
 
-      <div class="cart__block">
-        <ul class="cart__orders">
-          <li class="cart__order">
-            <h3>Смартфон Xiaomi Redmi Note 7 Pro 6/128GB</h3>
-            <b>990 ₽</b>
-            <span>Артикул: 150030</span>
-          </li>
-          <li class="cart__order">
-            <h3>Гироскутер Razor Hovertrax 2.0ii</h3>
-            <b>1 990 ₽</b>
-            <span>Артикул: 150030</span>
-          </li>
-          <li class="cart__order">
-            <h3>Электрический дрифт-карт Razor Lil’ Crazy</h3>
-            <b>4 090 ₽</b>
-            <span>Артикул: 150030</span>
-          </li>
-        </ul>
-
-        <div class="cart__total">
-          <p>Доставка: <b>бесплатно</b></p>
-          <p>Итого: <b>3</b> товара на сумму <b>4 070 ₽</b></p>
-        </div>
-      </div>
+      <OrderListProducts
+        :products="orderInfo.basket.items"
+        :cart-product-length="orderInfo.basket.items.length"
+        :total-price="orderInfo.totalPrice"
+        :delivery-price="orderInfo.deliveryType.price"/>
     </form>
   </section>
 </template>
 
 <script>
+import axios from 'axios'
+import { API_BASE_URL } from '@/config'
+import LoadingPage from '@/components/Loading/LoadingPage'
+import OrderListProducts from '@/components/Order/OrderListProducts'
+
 export default {
-  name: 'OrderInfoPage'
+  name: 'OrderInfoPage',
+  components: {
+    OrderListProducts,
+    LoadingPage
+  },
+  methods: {
+    async loadOrderInfo () {
+      axios.get(`${API_BASE_URL}/api/orders/${this.$route.params.id}`,
+        { params: { userAccessKey: this.$store.state.userAccessKey } }).then((res) => {
+        this.$store.commit('updateOrderInfo', res.data)
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
+  },
+  computed: {
+    orderInfo () {
+      return this.$store.state.orderInfo
+    },
+    isLoading () {
+      return this.orderInfo === null
+    }
+  },
+  created () {
+    this.loadOrderInfo()
+  }
 }
 </script>

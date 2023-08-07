@@ -5,8 +5,8 @@
     </ul>
 
     <div class="cart__total">
-      <p>Доставка: <b>{{ $store.state.deliveryPrice }}</b></p>
-      <p>Итого: <b>{{ $store.state.cartProducts.length }}</b> товара на сумму <b>{{ totalPricePretty }} ₽</b></p>
+      <p>Доставка: <b>{{ deliveryFormat }}</b></p>
+      <p>Итого: <b>{{ cartProductLength }}</b> товара на сумму <b>{{ totalPricePretty }} ₽</b></p>
     </div>
 
     <button class="cart__button button button--primery" v-show="button" type="submit">
@@ -18,7 +18,6 @@
 <script>
 import OrderItemProduct from '@/components/Order/OrderItemProduct'
 import numberFormat from '@/helpers/numberFormat'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'OrderListProducts',
@@ -27,15 +26,34 @@ export default {
     button: {
       type: Boolean,
       default: false
+    },
+    totalPrice: {
+      type: Number,
+      required: true
+    },
+    products: {
+      type: Object,
+      require: true
+    },
+    deliveryPrice: {
+      type: String || Number,
+      required: true
+    },
+    cartProductLength: {
+      type: Number,
+      required: true
     }
   },
   computed: {
-    ...mapGetters({
-      products: 'cartDetailProducts',
-      totalPrice: 'cartTotalPrice'
-    }),
     totalPricePretty () {
       return numberFormat(this.totalPrice)
+    },
+    deliveryFormat () {
+      if (this.deliveryPrice === 'string') {
+        return this.deliveryPrice
+      } else {
+        return numberFormat(this.deliveryPrice)
+      }
     }
   }
 }
