@@ -4,12 +4,13 @@ import { API_BASE_URL } from '@/config'
 
 export default createStore({
   state: {
-    cartData: [],
     userAccessKey: null,
     cartProducts: [],
     cartProductsData: [],
     optionDelivery: 1,
-    optionPayment: 1
+    optionPayment: 1,
+    deliveryPrice: 'бесплатно',
+    orderInfo: null
   },
   mutations: {
     addCartProductData (state, items) {
@@ -35,6 +36,13 @@ export default createStore({
       if (item) {
         item.quantity = quantity
       }
+    },
+    resetCart (state) {
+      state.cartProducts = []
+      state.cartProductsData = []
+    },
+    updateOrderInfo (state, payload) {
+      state.orderInfo = payload
     }
   },
   getters: {
@@ -116,7 +124,8 @@ export default createStore({
         context.commit('updateCartProductData', res.data.items)
         context.commit('syncCartProducts')
       })
-    }
+    },
+
   },
   modules: {}
 })

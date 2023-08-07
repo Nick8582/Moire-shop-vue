@@ -5,7 +5,7 @@
     </ul>
 
     <div class="cart__total">
-      <p>Доставка: <b>бесплатно</b></p>
+      <p>Доставка: <b>{{ $store.state.deliveryPrice }}</b></p>
       <p>Итого: <b>{{ $store.state.cartProducts.length }}</b> товара на сумму <b>{{ totalPricePretty }} ₽</b></p>
     </div>
 

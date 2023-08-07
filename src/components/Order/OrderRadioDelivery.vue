@@ -8,7 +8,7 @@
         :value="options.id"
         :checked="checkOptions === options.id"
         @click="checkClick(options.id)">
-      <span class="options__value">{{ options.title }} <b>{{ priceOption }}</b></span>
+      <span class="options__value">{{ options.title }} <b>{{ price }}</b></span>
     </label>
   </li>
 </template>
@@ -24,22 +24,34 @@ export default {
       type: Object
     }
   },
+  data () {
+    return {
+      price: ''
+    }
+  },
   computed: {
-    priceOption () {
-      if (this.options.price === '0') {
-        return 'бесплатно'
-      } else {
-        return `${numberFormat(this.options.price)} ₽`
-      }
-    },
     checkOptions () {
       return this.$store.state.optionDelivery
     }
   },
   methods: {
+    priceOption () {
+      if (this.options.price === '0') {
+        this.price = 'бесплатно'
+      } else {
+        this.price = `${numberFormat(this.options.price)} ₽`
+      }
+    },
+    priceStore () {
+      this.$store.state.deliveryPrice = this.price
+    },
     checkClick (val) {
+      this.priceStore()
       this.$store.state.optionDelivery = val
     }
+  },
+  created () {
+    this.priceOption()
   }
 }
 </script>
