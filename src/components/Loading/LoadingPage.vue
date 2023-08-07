@@ -1,8 +1,8 @@
 <template>
   <div class="loader__container">
-    <img src="../../assets/logo-moire.svg" class="logo__loader" alt="">
+    <img v-if="viewLogo" src="../../assets/logo-moire.svg" class="logo__loader" alt="">
     <h2 class="loader__title">
-      <span>Загрузка</span>
+      <span>{{ title }}</span>
       <span class="lds-dual-ring"></span>
     </h2>
   </div>
@@ -10,7 +10,17 @@
 
 <script>
 export default {
-  name: 'LoadingPage'
+  name: 'LoadingPage',
+  props: {
+    title: {
+      type: String,
+      default: 'Загрузка'
+    },
+    viewLogo: {
+      type: Boolean,
+      default: true
+    }
+  }
 }
 </script>
 <style>

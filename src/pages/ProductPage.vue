@@ -80,9 +80,11 @@
             </fieldset>
           </div>
 
-          <button class="item__button button button--primery" type="submit">
+          <button class="item__button button button--primery" :disabled="productAddSending" type="submit">
             В корзину
           </button>
+          <LoadingPage v-if="productAddSending" :view-logo="false" :title="'Добавление в корзину'" />
+          <h2 v-if="productAdded">Добавлено в корзину</h2>
         </form>
       </div>
     </div>

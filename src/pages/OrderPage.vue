@@ -140,7 +140,6 @@ export default {
       }).then((res) => {
         this.$store.commit('resetCart')
         this.$store.commit('updateOrderInfo', res.data)
-        console.log(res.data)
         this.$router.push({
           name: 'orderInfo',
           params: { id: res.data.id }
