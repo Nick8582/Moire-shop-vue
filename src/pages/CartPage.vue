@@ -24,7 +24,8 @@
   <section class="cart">
     <form class="cart__form form" action="#" method="POST">
       <div class="cart__field">
-        <ul class="cart__list">
+        <h2 v-if="$store.state.cartProducts.length === 0">Корзина пуста</h2>
+        <ul class="cart__list" v-else>
           <CartItem v-for="product in products" :product="product" :key="product.id"/>
         </ul>
       </div>

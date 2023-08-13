@@ -1,7 +1,5 @@
 <template>
-  <ul class="cart__options options">
-    <OrderRadioDelivery v-for="item in optionsDelivery" :key="item.id" :options="item" />
-  </ul>
+  <OrderRadioDelivery v-for="item in optionsDelivery" :key="item.id" :options="item"/>
 </template>
 
 <script>

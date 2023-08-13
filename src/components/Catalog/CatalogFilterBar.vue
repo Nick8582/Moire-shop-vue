@@ -84,7 +84,7 @@
       <button class="filter__submit button button--primery" type="submit">
         Применить
       </button>
-      <button class="filter__reset button button--second" type="button" @click.prevent="reset">
+      <button class="filter__reset button button--second" type="button" v-show="!isVisibleClearBtn" @click.prevent="reset">
         Сбросить
       </button>
     </form>
@@ -131,6 +131,16 @@ export default {
     },
     seasons () {
       return this.seasonsData ? this.seasonsData.items : []
+    },
+    isVisibleClearBtn () {
+      return (
+        !this.currentPriceTo &&
+        !this.currentPriceFrom &&
+        !this.currentCategoryId &&
+        !this.currentColorId?.length &&
+        !this.currentMaterialId?.length &&
+        !this.currentSeasonId?.length
+      )
     }
   },
   watch: {

@@ -60,10 +60,15 @@
 
         <div class="cart__options">
           <h3 class="cart__title">Доставка</h3>
-          <OrderDelivery/>
-
+          <ul class="cart__options options">
+            <OrderDelivery/>
+          </ul>
+          <span class="form__error" v-if="formError.deliveryTypeId">{{ formError.deliveryTypeId }}</span>
           <h3 class="cart__title">Оплата</h3>
-          <OrderPayment/>
+          <ul class="cart__options options">
+            <OrderPayment/>
+          </ul>
+          <span class="form__error" v-if="formError.paymentTypeId">{{ formError.paymentTypeId }}</span>
         </div>
       </div>
 
