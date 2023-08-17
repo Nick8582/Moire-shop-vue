@@ -15,11 +15,21 @@ export default {
       optionsPayment: []
     }
   },
+  computed: {
+    optionDeliveryId () {
+      return this.$store.state.optionDelivery
+    }
+  },
+  watch: {
+    optionDeliveryId () {
+      this.loadOrderPayment()
+    }
+  },
   methods: {
     loadOrderPayment () {
       axios.get(`${API_BASE_URL}/api/payments`, {
         params: {
-          deliveryTypeId: this.$store.state.optionPayment
+          deliveryTypeId: this.optionDeliveryId
         }
       }).then((res) => {
         this.optionsPayment = res.data

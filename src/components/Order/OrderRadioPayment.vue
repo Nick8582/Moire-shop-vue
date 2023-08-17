@@ -6,7 +6,7 @@
         type="radio"
         name="pay"
         :value="options.id"
-        :checked="checkOptions === options.id"
+        checked=""
         @click="checkClick(options.id)">
       <span class="options__value">{{ options.title }}</span>
     </label>
@@ -20,11 +20,6 @@ export default {
     options: {
       required: true,
       type: Object
-    }
-  },
-  computed: {
-    checkOptions () {
-      return this.$store.state.optionPayment
     }
   },
   methods: {
